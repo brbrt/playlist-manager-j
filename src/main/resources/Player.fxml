@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.media.MediaView?>
+
+<VBox xmlns:fx="http://javafx.com/fxml"
+      fx:controller="org.brbrt.playlistmanagerj.PlayerController">
+    <Label text="playlist-manager-j"/>
+    <MediaView fx:id="mediaView"/>
+</VBox>
