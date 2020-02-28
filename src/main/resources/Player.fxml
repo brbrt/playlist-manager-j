@@ -4,7 +4,9 @@
 <?import javafx.scene.media.MediaView?>
 
 <VBox xmlns:fx="http://javafx.com/fxml"
-      fx:controller="org.brbrt.playlistmanagerj.PlayerController">
+      fx:controller="org.brbrt.playlistmanagerj.PlayerController"
+      fx:id="box">
     <Label text="playlist-manager-j"/>
-    <MediaView fx:id="mediaView"/>
+    <MediaView fx:id="mediaView" />
+    <Label fx:id="currentSongTitle"/>
 </VBox>
