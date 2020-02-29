@@ -1,34 +1,50 @@
 package org.brbrt.playlistmanagerj;
 
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.builder.SpringApplicationBuilder;
+import org.springframework.context.ConfigurableApplicationContext;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
 
+@SpringBootApplication
+public class PlaylistManagerApplication extends Application {
 
-public class Main extends Application {
+    private ConfigurableApplicationContext applicationContext;
+
+    @Override
+    public void init() {
+        applicationContext = new SpringApplicationBuilder(PlaylistManagerApplication.class).run();
+    }
 
     @Override
     public void start(Stage primaryStage) {
         Scene scene = new Scene(loadFxml("Player.fxml"),900,500);
-        primaryStage.setScene(scene);
-        primaryStage.show();
-
         primaryStage.setTitle("playlist-manager-j");
         primaryStage.setScene(scene);
         primaryStage.show();
     }
 
+    @Override
+    public void stop() {
+        applicationContext.close();
+        Platform.exit();
+        System.exit(0);
+    }
+
     public static void main(String... args) {
-        launch(args);
+        Application.launch(PlaylistManagerApplication.class, args);
     }
 
     private Parent loadFxml(String fileName) {
         FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource(fileName));
+        loader.setControllerFactory(applicationContext::getBean);
 
         try {
             return loader.load();

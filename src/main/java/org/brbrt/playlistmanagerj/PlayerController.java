@@ -12,13 +12,21 @@ import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.Dragboard;
 import javafx.scene.input.TransferMode;
 import javafx.scene.layout.VBox;
+import org.slf4j.Logger;
+import org.springframework.beans.factory.DisposableBean;
+import org.springframework.stereotype.Component;
 
 import java.io.File;
 import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
 
-public class PlayerController implements Initializable {
+@Component
+public class PlayerController implements Initializable, DisposableBean {
+
+    private final Logger logger;
+    private final StreamPlayer streamPlayer;
+    private final ObservableList<Media> playlist = FXCollections.observableArrayList();
 
     @FXML
     private VBox box;
@@ -27,12 +35,15 @@ public class PlayerController implements Initializable {
     @FXML
     private TableView<Media> playlistView;
 
-    private StreamPlayer streamPlayer = new StreamPlayer();
-
-    private ObservableList<Media> playlist = FXCollections.observableArrayList();
+    public PlayerController(Logger logger, StreamPlayer streamPlayer) {
+        this.logger = logger;
+        this.streamPlayer = streamPlayer;
+    }
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        logger.info("initialize");
+
         box.setOnDragDetected(e -> {
             Dragboard dragboard = box.startDragAndDrop(TransferMode.COPY);
 
@@ -66,6 +77,12 @@ public class PlayerController implements Initializable {
 
         playlist.add(media);
         currentSongTitle.setText(media.getTitle());
+    }
+
+    @Override
+    public void destroy() {
+        logger.info("Destroy");
+        streamPlayer.stop();
     }
 
 }
