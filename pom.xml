@@ -20,15 +20,14 @@
         </dependency>
         <dependency>
             <groupId>org.openjfx</groupId>
-            <artifactId>javafx-media</artifactId>
-            <version>${javafx.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.openjfx</groupId>
             <artifactId>javafx-fxml</artifactId>
             <version>${javafx.version}</version>
         </dependency>
-
+        <dependency>
+            <groupId>com.github.goxr3plus</groupId>
+            <artifactId>java-stream-player</artifactId>
+            <version>9.0.4</version>
+        </dependency>
     </dependencies>
 
     <build>
@@ -43,4 +42,11 @@
             </plugin>
         </plugins>
     </build>
+
+    <repositories>
+        <repository>
+            <id>jitpack.io</id>
+            <url>https://jitpack.io</url>
+        </repository>
+    </repositories>
 </project>
