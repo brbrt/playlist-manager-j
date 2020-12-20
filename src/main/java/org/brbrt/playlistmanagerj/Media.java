@@ -7,6 +7,13 @@ public class Media {
     private File file;
     private String title;
 
+    public Media() {}
+
+    public Media(Media other) {
+        this.file = other.file;
+        this.title = other.title;
+    }
+
     public File getFile() {
         return file;
     }
