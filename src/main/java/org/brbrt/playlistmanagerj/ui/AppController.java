@@ -7,6 +7,7 @@ import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.stage.Stage;
 import org.brbrt.playlistmanagerj.FxmlLoader;
+import org.brbrt.playlistmanagerj.Player;
 import org.brbrt.playlistmanagerj.event.PlaybackStartedEvent;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,21 +25,34 @@ import static org.springframework.beans.factory.config.BeanDefinition.SCOPE_SING
 public class AppController implements Initializable {
 
     private final FxmlLoader fxmlLoader;
+    private final Player player;
     private final Logger logger;
 
     @FXML
     private TabPane playlists;
 
     @Autowired
-    public AppController(FxmlLoader fxmlLoader, Logger logger) {
+    public AppController(FxmlLoader fxmlLoader,
+                         Player player,
+                         Logger logger) {
         this.fxmlLoader = fxmlLoader;
+        this.player = player;
         this.logger = logger;
     }
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         logger.info("initialize");
+        initTabs();
+        initKeyboardShortcuts();
+    }
 
+    @EventListener
+    void onPlaybackStarted(PlaybackStartedEvent e) {
+        Platform.runLater(() -> primaryStage().setTitle(e.getMedia().getTitle() + " [playlist-manager-j]"));
+    }
+
+    private void initTabs() {
         Tab defaultPlaylist = createPlaylistTab("Default");
         playlists.getTabs().add(defaultPlaylist);
 
@@ -57,16 +71,24 @@ public class AppController implements Initializable {
         });
     }
 
-    @EventListener
-    void onPlaybackStarted(PlaybackStartedEvent e) {
-        Platform.runLater(() -> primaryStage().setTitle(e.getMedia().getTitle() + " [playlist-manager-j]"));
-    }
-
     private Tab createPlaylistTab(String name) {
         Tab t = new Tab();
         t.setText(name);
         t.setContent(fxmlLoader.load("Playlist.fxml"));
         return t;
+    }
+
+    private void initKeyboardShortcuts() {
+        playlists.setOnKeyPressed(e -> {
+            switch (e.getCode()) {
+                case V:
+                    player.stop();
+                    break;
+                case C:
+                    player.pauseOrResume();
+                    break;
+            }
+        });
     }
 
     private Stage primaryStage() {

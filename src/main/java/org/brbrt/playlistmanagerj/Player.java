@@ -14,6 +14,8 @@ public class Player {
     private final Logger logger;
     private final StreamPlayer streamPlayer;
 
+    private Media currentMedia;
+
     public Player(ApplicationEventPublisher applicationEventPublisher,
                   Logger logger,
                   StreamPlayer streamPlayer) {
@@ -22,21 +24,38 @@ public class Player {
         this.streamPlayer = streamPlayer;
     }
 
-    public void play(Media media) {
+    public void open(Media media) {
         streamPlayer.stop();
 
         try {
             streamPlayer.open(media.getFile());
-            streamPlayer.play();
-
-            applicationEventPublisher.publishEvent(new PlaybackStartedEvent(media));
+            currentMedia = media;
         } catch (StreamPlayerException ex) {
-            logger.warn("Error opening media: {}", media, ex);
+            logger.warn("Error while opening media: {}", media, ex);
+        }
+    }
+
+    public void play() {
+        try {
+            streamPlayer.play();
+            applicationEventPublisher.publishEvent(new PlaybackStartedEvent(currentMedia));
+        } catch (StreamPlayerException ex) {
+            logger.warn("Error while playing", ex);
         }
     }
 
     public void stop() {
         streamPlayer.stop();
+    }
+
+    public void pauseOrResume() {
+        if (streamPlayer.isPaused()) {
+            streamPlayer.resume();
+            return;
+        }
+        if (streamPlayer.isPlaying()) {
+            streamPlayer.pause();
+        }
     }
 
 }

@@ -9,7 +9,6 @@ import javafx.scene.input.*;
 import org.brbrt.playlistmanagerj.Media;
 import org.brbrt.playlistmanagerj.Player;
 import org.slf4j.Logger;
-import org.springframework.beans.factory.DisposableBean;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
@@ -22,7 +21,7 @@ import static org.springframework.beans.factory.config.BeanDefinition.SCOPE_PROT
 
 @Component
 @Scope(SCOPE_PROTOTYPE)
-public class PlaylistController implements Initializable, DisposableBean {
+public class PlaylistController implements Initializable {
 
     private final Logger logger;
     private final Player player;
@@ -66,24 +65,20 @@ public class PlaylistController implements Initializable, DisposableBean {
         playlistView.setOnMouseClicked(e -> {
             if (e.getButton() == MouseButton.PRIMARY && e.getClickCount() > 1) {
                 logger.info("double clicked");
-                play(playlistView.getSelectionModel().getSelectedItem());
+                select(playlistView.getSelectionModel().getSelectedItem());
             }
         });
         playlistView.setOnKeyPressed(e -> {
             if (e.getCode() == KeyCode.ENTER) {
                 logger.info("enter pressed");
-                play(playlistView.getSelectionModel().getSelectedItem());
+                select(playlistView.getSelectionModel().getSelectedItem());
             }
         });
     }
 
-    void play(Media media) {
-        player.play(media);
-    }
-
-    @Override
-    public void destroy() {
-        logger.info("Destroying PlayerController");
+    void select(Media media) {
+        player.open(media);
+        player.play();
     }
 
 }
