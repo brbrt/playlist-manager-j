@@ -2,16 +2,12 @@ package org.brbrt.playlistmanagerj;
 
 import javafx.application.Application;
 import javafx.application.Platform;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.context.ConfigurableApplicationContext;
 
-import java.io.IOException;
-import java.io.UncheckedIOException;
 
 @SpringBootApplication
 public class PlaylistManagerApplication extends Application {
@@ -25,7 +21,9 @@ public class PlaylistManagerApplication extends Application {
 
     @Override
     public void start(Stage primaryStage) {
-        Scene scene = new Scene(loadFxml("Playlist.fxml"), 900, 500);
+        FxmlLoader fxmlLoader = applicationContext.getBean(FxmlLoader.class);
+
+        Scene scene = new Scene(fxmlLoader.load("App.fxml"), 1000, 500);
         primaryStage.setTitle("playlist-manager-j");
         primaryStage.setScene(scene);
         primaryStage.show();
@@ -40,17 +38,6 @@ public class PlaylistManagerApplication extends Application {
 
     public static void main(String... args) {
         Application.launch(PlaylistManagerApplication.class, args);
-    }
-
-    private Parent loadFxml(String fileName) {
-        FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource(fileName));
-        loader.setControllerFactory(applicationContext::getBean);
-
-        try {
-            return loader.load();
-        } catch (IOException e) {
-            throw new UncheckedIOException(e);
-        }
     }
 
 }

@@ -3,7 +3,9 @@ package org.brbrt.playlistmanagerj;
 import com.goxr3plus.streamplayer.stream.StreamPlayer;
 import com.goxr3plus.streamplayer.stream.StreamPlayerException;
 import org.slf4j.Logger;
+import org.springframework.stereotype.Component;
 
+@Component
 public class Player {
 
     private final Logger logger;
@@ -23,6 +25,8 @@ public class Player {
         } catch (StreamPlayerException ex) {
             logger.warn("Error opening media: {}", media, ex);
         }
+
+        // TODO: display currently played song
     }
 
     public void stop() {

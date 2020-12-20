@@ -13,5 +13,7 @@ module playlist.manager.j {
     requires com.goxr3plus.streamplayer;
 
     exports org.brbrt.playlistmanagerj;
+    exports org.brbrt.playlistmanagerj.ui;
     opens org.brbrt.playlistmanagerj;
+    opens org.brbrt.playlistmanagerj.ui;
 }

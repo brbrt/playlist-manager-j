@@ -24,9 +24,4 @@ public class AppConfig {
         return new StreamPlayer();
     }
 
-    @Bean
-    Player player(Logger logger, StreamPlayer streamPlayer) {
-        return new Player(logger, streamPlayer);
-    }
-
 }

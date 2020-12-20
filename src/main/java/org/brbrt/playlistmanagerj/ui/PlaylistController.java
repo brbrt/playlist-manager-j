@@ -1,15 +1,16 @@
-package org.brbrt.playlistmanagerj;
+package org.brbrt.playlistmanagerj.ui;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Label;
 import javafx.scene.control.TableView;
 import javafx.scene.input.*;
-import javafx.scene.layout.VBox;
+import org.brbrt.playlistmanagerj.Media;
+import org.brbrt.playlistmanagerj.Player;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.DisposableBean;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import java.net.URL;
@@ -17,17 +18,16 @@ import java.util.List;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 
+import static org.springframework.beans.factory.config.BeanDefinition.SCOPE_PROTOTYPE;
+
 @Component
+@Scope(SCOPE_PROTOTYPE)
 public class PlaylistController implements Initializable, DisposableBean {
 
     private final Logger logger;
     private final Player player;
     private final ObservableList<Media> playlist = FXCollections.observableArrayList();
 
-    @FXML
-    private VBox box;
-    @FXML
-    private Label currentSongTitle;
     @FXML
     private TableView<Media> playlistView;
 
@@ -40,16 +40,16 @@ public class PlaylistController implements Initializable, DisposableBean {
     public void initialize(URL url, ResourceBundle resourceBundle) {
         logger.info("initialize");
 
-        box.setOnDragDetected(e -> {
-            Dragboard dragboard = box.startDragAndDrop(TransferMode.COPY);
+        playlistView.setOnDragDetected(e -> {
+            Dragboard dragboard = playlistView.startDragAndDrop(TransferMode.COPY);
 
             ClipboardContent content = new ClipboardContent();
             dragboard.setContent(content);
         });
 
-        box.setOnDragOver(e -> e.acceptTransferModes(TransferMode.COPY));
+        playlistView.setOnDragOver(e -> e.acceptTransferModes(TransferMode.COPY));
 
-        box.setOnDragDropped(e -> {
+        playlistView.setOnDragDropped(e -> {
             Dragboard dragboard = e.getDragboard();
 
             List<Media> tracks = dragboard.getFiles()
@@ -79,7 +79,6 @@ public class PlaylistController implements Initializable, DisposableBean {
 
     void play(Media media) {
         player.play(media);
-        currentSongTitle.setText(media.getTitle());
     }
 
     @Override
