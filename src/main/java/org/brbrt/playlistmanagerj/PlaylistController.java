@@ -20,7 +20,7 @@ import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 
 @Component
-public class PlayerController implements Initializable, DisposableBean {
+public class PlaylistController implements Initializable, DisposableBean {
 
     private final Logger logger;
     private final StreamPlayer streamPlayer;
@@ -33,7 +33,7 @@ public class PlayerController implements Initializable, DisposableBean {
     @FXML
     private TableView<Media> playlistView;
 
-    public PlayerController(Logger logger, StreamPlayer streamPlayer) {
+    public PlaylistController(Logger logger, StreamPlayer streamPlayer) {
         this.logger = logger;
         this.streamPlayer = streamPlayer;
     }
