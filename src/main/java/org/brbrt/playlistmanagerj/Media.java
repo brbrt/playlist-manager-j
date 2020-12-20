@@ -25,4 +25,8 @@ public class Media {
         return this;
     }
 
+    @Override
+    public String toString() {
+        return "Media{" + "file=" + file + '}';
+    }
 }

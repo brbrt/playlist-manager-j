@@ -16,10 +16,10 @@ import org.slf4j.Logger;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.stereotype.Component;
 
-import java.io.File;
 import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.stream.Collectors;
 
 @Component
 public class PlayerController implements Initializable, DisposableBean {
@@ -55,33 +55,37 @@ public class PlayerController implements Initializable, DisposableBean {
 
         box.setOnDragDropped(e -> {
             Dragboard dragboard = e.getDragboard();
-            List<File> files = dragboard.getFiles();
-            play(files.get(0));
+
+            List<Media> tracks = dragboard.getFiles()
+                    .stream()
+                    .map(file -> new Media().setFile(file).setTitle(file.getName()))
+                    .collect(Collectors.toList());
+
+            playlist.addAll(tracks);
+            play(tracks.get(0));
+
             e.setDropCompleted(true);
         });
 
         playlistView.setItems(playlist);
     }
 
-    void play(File file) {
+    void play(Media media) {
         streamPlayer.stop();
 
         try {
-            streamPlayer.open(file);
+            streamPlayer.open(media.getFile());
             streamPlayer.play();
-        } catch (StreamPlayerException e) {
-            e.printStackTrace();
+        } catch (StreamPlayerException ex) {
+            logger.warn("Error opening media: {}", media, ex);
         }
 
-        Media media = new Media().setFile(file).setTitle(file.getName());
-
-        playlist.add(media);
         currentSongTitle.setText(media.getTitle());
     }
 
     @Override
     public void destroy() {
-        logger.info("Destroy");
+        logger.info("Destroying PlayerController");
         streamPlayer.stop();
     }
 
