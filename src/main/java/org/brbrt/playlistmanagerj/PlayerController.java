@@ -8,9 +8,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableView;
-import javafx.scene.input.ClipboardContent;
-import javafx.scene.input.Dragboard;
-import javafx.scene.input.TransferMode;
+import javafx.scene.input.*;
 import javafx.scene.layout.VBox;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.DisposableBean;
@@ -62,12 +60,23 @@ public class PlayerController implements Initializable, DisposableBean {
                     .collect(Collectors.toList());
 
             playlist.addAll(tracks);
-            play(tracks.get(0));
 
             e.setDropCompleted(true);
         });
 
         playlistView.setItems(playlist);
+        playlistView.setOnMouseClicked(e -> {
+            if (e.getButton() == MouseButton.PRIMARY && e.getClickCount() > 1) {
+                logger.info("double clicked");
+                play(playlistView.getSelectionModel().getSelectedItem());
+            }
+        });
+        playlistView.setOnKeyPressed(e -> {
+            if (e.getCode() == KeyCode.ENTER) {
+                logger.info("enter pressed");
+                play(playlistView.getSelectionModel().getSelectedItem());
+            }
+        });
     }
 
     void play(Media media) {
