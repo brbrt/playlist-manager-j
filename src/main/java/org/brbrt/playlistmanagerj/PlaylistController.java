@@ -1,7 +1,5 @@
 package org.brbrt.playlistmanagerj;
 
-import com.goxr3plus.streamplayer.stream.StreamPlayer;
-import com.goxr3plus.streamplayer.stream.StreamPlayerException;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -23,7 +21,7 @@ import java.util.stream.Collectors;
 public class PlaylistController implements Initializable, DisposableBean {
 
     private final Logger logger;
-    private final StreamPlayer streamPlayer;
+    private final Player player;
     private final ObservableList<Media> playlist = FXCollections.observableArrayList();
 
     @FXML
@@ -33,9 +31,9 @@ public class PlaylistController implements Initializable, DisposableBean {
     @FXML
     private TableView<Media> playlistView;
 
-    public PlaylistController(Logger logger, StreamPlayer streamPlayer) {
+    public PlaylistController(Logger logger, Player player) {
         this.logger = logger;
-        this.streamPlayer = streamPlayer;
+        this.player = player;
     }
 
     @Override
@@ -80,22 +78,13 @@ public class PlaylistController implements Initializable, DisposableBean {
     }
 
     void play(Media media) {
-        streamPlayer.stop();
-
-        try {
-            streamPlayer.open(media.getFile());
-            streamPlayer.play();
-        } catch (StreamPlayerException ex) {
-            logger.warn("Error opening media: {}", media, ex);
-        }
-
+        player.play(media);
         currentSongTitle.setText(media.getTitle());
     }
 
     @Override
     public void destroy() {
         logger.info("Destroying PlayerController");
-        streamPlayer.stop();
     }
 
 }

@@ -8,19 +8,25 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
 
+import static org.springframework.beans.factory.config.BeanDefinition.SCOPE_PROTOTYPE;
+
 @Configuration
 public class AppConfig {
 
     @Bean
-    @Scope("prototype")
+    @Scope(SCOPE_PROTOTYPE)
     Logger logger(InjectionPoint ip) {
         return LoggerFactory.getLogger(ip.getMember().getDeclaringClass());
     }
 
-    @Bean
-    @Scope("prototype")
+    @Bean(destroyMethod = "stop")
     StreamPlayer streamPlayer() {
         return new StreamPlayer();
+    }
+
+    @Bean
+    Player player(Logger logger, StreamPlayer streamPlayer) {
+        return new Player(logger, streamPlayer);
     }
 
 }
