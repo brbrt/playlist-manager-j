@@ -3,8 +3,7 @@ package org.brbrt.playlistmanagerj.ui;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Tab;
-import javafx.scene.control.TabPane;
+import javafx.scene.control.*;
 import javafx.stage.Stage;
 import org.brbrt.playlistmanagerj.FxmlLoader;
 import org.brbrt.playlistmanagerj.Player;
@@ -63,7 +62,7 @@ public class AppController implements Initializable {
         playlists.getSelectionModel().selectedItemProperty().addListener((x, y, selectedTab) -> {
             if (selectedTab == addPlaylist) {
                 int index = playlists.getSelectionModel().getSelectedIndex();
-                Tab playlistTab = createPlaylistTab(String.valueOf(index));
+                Tab playlistTab = createPlaylistTab("New tab");
 
                 playlists.getTabs().add(index, playlistTab);
                 playlists.getSelectionModel().select(playlistTab);
@@ -75,6 +74,23 @@ public class AppController implements Initializable {
         Tab t = new Tab();
         t.setText(name);
         t.setContent(fxmlLoader.load("Playlist.fxml"));
+
+        MenuItem close = new MenuItem("Close playlist");
+        close.setOnAction(e -> playlists.getTabs().remove(t));
+
+        MenuItem rename = new MenuItem("Rename playlist");
+        rename.setOnAction(e -> {
+            TextInputDialog input = new TextInputDialog(t.getText());
+            input.setHeaderText("Rename playlist from '" + t.getText() + "' to:");
+            input.setGraphic(null);
+            input.setTitle("Rename");
+            input.showAndWait().ifPresent(t::setText);
+        });
+
+        ContextMenu menu = new ContextMenu();
+        menu.getItems().addAll(close, rename);
+        t.setContextMenu(menu);
+
         return t;
     }
 
