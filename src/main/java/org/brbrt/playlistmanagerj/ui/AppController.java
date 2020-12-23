@@ -5,7 +5,8 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
-import org.brbrt.playlistmanagerj.FxmlLoader;
+import org.brbrt.playlistmanagerj.FxmlView;
+import org.brbrt.playlistmanagerj.FxmlViewLoader;
 import org.brbrt.playlistmanagerj.Player;
 import org.brbrt.playlistmanagerj.event.PlaybackStartedEvent;
 import org.slf4j.Logger;
@@ -15,7 +16,7 @@ import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
 import java.net.URL;
-import java.util.ResourceBundle;
+import java.util.*;
 
 import static org.springframework.beans.factory.config.BeanDefinition.SCOPE_SINGLETON;
 
@@ -23,18 +24,19 @@ import static org.springframework.beans.factory.config.BeanDefinition.SCOPE_SING
 @Scope(SCOPE_SINGLETON)
 public class AppController implements Initializable {
 
-    private final FxmlLoader fxmlLoader;
+    private final FxmlViewLoader fxmlViewLoader;
     private final Player player;
     private final Logger logger;
 
     @FXML
     private TabPane playlists;
+    private Map<Tab, PlaylistController> playlistControllers = new HashMap<>();
 
     @Autowired
-    public AppController(FxmlLoader fxmlLoader,
+    public AppController(FxmlViewLoader fxmlViewLoader,
                          Player player,
                          Logger logger) {
-        this.fxmlLoader = fxmlLoader;
+        this.fxmlViewLoader = fxmlViewLoader;
         this.player = player;
         this.logger = logger;
     }
@@ -73,10 +75,17 @@ public class AppController implements Initializable {
     private Tab createPlaylistTab(String name) {
         Tab t = new Tab();
         t.setText(name);
-        t.setContent(fxmlLoader.load("Playlist.fxml"));
+
+        FxmlView<PlaylistController> playlistView = fxmlViewLoader.load("Playlist.fxml");
+        t.setContent(playlistView.getRootNode());
+
+        playlistControllers.put(t, playlistView.getController());
 
         MenuItem close = new MenuItem("Close playlist");
-        close.setOnAction(e -> playlists.getTabs().remove(t));
+        close.setOnAction(e -> {
+            playlists.getTabs().remove(t);
+            playlistControllers.remove(t);
+        });
 
         MenuItem rename = new MenuItem("Rename playlist");
         rename.setOnAction(e -> {

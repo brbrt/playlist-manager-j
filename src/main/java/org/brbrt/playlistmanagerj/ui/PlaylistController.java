@@ -152,6 +152,10 @@ public class PlaylistController implements Initializable {
     }
 
     private void select(Media media) {
+        if (media == null) {
+            return;
+        }
+
         player.open(media);
         player.play();
     }

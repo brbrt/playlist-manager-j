@@ -21,9 +21,9 @@ public class PlaylistManagerApplication extends Application {
 
     @Override
     public void start(Stage primaryStage) {
-        FxmlLoader fxmlLoader = applicationContext.getBean(FxmlLoader.class);
+        FxmlViewLoader fxmlViewLoader = applicationContext.getBean(FxmlViewLoader.class);
 
-        Scene scene = new Scene(fxmlLoader.load("App.fxml"), 1000, 500);
+        Scene scene = new Scene(fxmlViewLoader.load("App.fxml").getRootNode(), 1000, 500);
         primaryStage.setTitle("playlist-manager-j");
         primaryStage.setScene(scene);
         primaryStage.show();
