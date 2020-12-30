@@ -5,8 +5,6 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
-import org.brbrt.playlistmanagerj.FxmlView;
-import org.brbrt.playlistmanagerj.FxmlViewLoader;
 import org.brbrt.playlistmanagerj.Player;
 import org.brbrt.playlistmanagerj.event.PlaybackStartedEvent;
 import org.slf4j.Logger;

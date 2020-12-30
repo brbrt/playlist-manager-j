@@ -1,4 +1,4 @@
-package org.brbrt.playlistmanagerj;
+package org.brbrt.playlistmanagerj.ui;
 
 import javafx.scene.Parent;
 
