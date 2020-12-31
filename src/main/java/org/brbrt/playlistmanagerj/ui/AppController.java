@@ -4,6 +4,8 @@ import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
+import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import org.brbrt.playlistmanagerj.Player;
 import org.brbrt.playlistmanagerj.event.PlaybackStartedEvent;
@@ -26,6 +28,8 @@ public class AppController implements Initializable {
     private final Player player;
     private final Logger logger;
 
+    @FXML
+    private VBox root;
     @FXML
     private TabPane playlists;
     private Map<Tab, PlaylistController> playlistControllers = new HashMap<>();
@@ -102,13 +106,23 @@ public class AppController implements Initializable {
     }
 
     private void initKeyboardShortcuts() {
-        playlists.setOnKeyPressed(e -> {
+        root.addEventFilter(KeyEvent.KEY_PRESSED, e -> {
             switch (e.getCode()) {
                 case V:
                     player.stop();
+                    e.consume();
                     break;
                 case C:
                     player.pauseOrResume();
+                    e.consume();
+                    break;
+                case LEFT:
+                    player.seek(-15);
+                    e.consume();
+                    break;
+                case RIGHT:
+                    player.seek(15);
+                    e.consume();
                     break;
             }
         });

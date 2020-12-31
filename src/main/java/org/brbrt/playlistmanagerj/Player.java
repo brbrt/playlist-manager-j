@@ -48,6 +48,30 @@ public class Player {
         streamPlayer.stop();
     }
 
+    public void seek(int deltaInSeconds) {
+        if (!streamPlayer.isPlaying()) {
+            return;
+        }
+
+        double percent = (double)streamPlayer.getEncodedStreamPosition() / streamPlayer.getTotalBytes();
+        int duration = streamPlayer.getDurationInSeconds();
+        double elapsed = percent * duration;
+
+        int targetSeconds = (int)Math.max(0, elapsed + deltaInSeconds);
+
+        if (targetSeconds > duration) {
+            return;
+        }
+
+        logger.info("Seek {} seconds to: {}", deltaInSeconds, targetSeconds);
+
+        try {
+            streamPlayer.seekTo(targetSeconds);
+        } catch (StreamPlayerException ex) {
+            logger.warn("Error while seeking", ex);
+        }
+    }
+
     public void pauseOrResume() {
         if (streamPlayer.isPaused()) {
             streamPlayer.resume();

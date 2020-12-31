@@ -5,6 +5,7 @@
 
 <VBox xmlns="http://javafx.com/javafx/10.0.2-internal"
       xmlns:fx="http://javafx.com/fxml/1"
+      fx:id="root"
       fx:controller="org.brbrt.playlistmanagerj.ui.AppController">
     <TabPane fx:id="playlists"
              tabClosingPolicy="UNAVAILABLE"
